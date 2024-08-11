@@ -12,20 +12,24 @@ DFS is a suitable approach for this problem as it explores all possible paths un
 * Backtrack by unmarking the current position.
 - Call the recursive function with the starting position.
 
-def is_path_exists(grid, start, end):
+def is_path_exists(grid, start, exit):
     m, n = len(grid), len(grid[0])
-    
+    visited = [[False] * n for _ in range(m)]
+
     def dfs(x, y):
-        if x == end[0] and y == end[1]:
-            return True
-        if x < 0 or x >= m or y < 0 or y >= n or grid[x][y] == 1:
+        if x < 0 or x >= m or y < 0 or y >= n or grid[x][y] == 1 or visited[x][y]:
             return False
-        
-        grid[x][y] = 2  
-        
-        return dfs(x + 1, y) or dfs(x - 1, y) or dfs(x, y + 1) or dfs(x, y - 1)
-    
+        if x == exit[0] and y == exit[1]:
+            return True
+        visited[x][y] = True
+        for dx, dy in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+            if dfs(x + dx, y + dy):
+                return True
+        visited[x][y] = False  # Backtrack
+        return False
+
     return dfs(start[0], start[1])
+
    
 Time Complexity: O(m * n) in the worst case, where m and n are the dimensions of the grid.
 Space Complexity: O(m * n) in the worst case for the recursion stack
